@@ -51,10 +51,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CodeSample.cs" />
     <Compile Include="GitHubManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="sample.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

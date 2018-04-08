@@ -23,10 +23,12 @@ namespace sampl_yaml_to_json
                 PrintCommandLineHelp();
                 return;
             }
-            //testtest
-            var yaml = ImportYaml(null, "test");
 
-           // SampleItem sample = ConvertYamlToJsonObject(yaml);
+            //testtest
+            var sample = new CodeSample();
+            sample.ImportYAMLFromGitHubFile("officedev", "Excel-Add-in-WoodGrove-Expense-Trends", "/Excel-Add-in-WoodGrove-Expense-Trends.yml");
+            var json = sample.GetJSON();
+
             return;
 
             //testtest
@@ -64,31 +66,7 @@ namespace sampl_yaml_to_json
             return GitHubManager.instance.client.Search.SearchCode(sr).Result;
         }
 
-        /// <summary>
-        /// Converts a Yaml value type to a Json value type
-        /// </summary>
-        /// <param name="yaml"></param>
-        /// <returns></returns>
-        static public SampleJsonVT ConvertYamlToJsonObject(SampleItem sampleYaml)
-        {
-            var sampleJson = new SampleJsonVT();
-            sampleJson.DateCreated = "";
-            sampleJson.Id = Guid.Empty;//todo this is either generated, or need to match with an existing one in json file passed in for comparison.
-            sampleJson.Languages = sampleYaml.sample[0].languages;
-            sampleJson.LastModifiedBy = "";//todo
-            sampleJson.LastModifiedDate = "";//todo
-            sampleJson.Products = sampleYaml.sample[0].products;
-            sampleJson.Recommended = "False";//currently the spec is using a string
-            sampleJson.Technologies = sampleYaml.sample[0].technologies;
-            sampleJson.Thumbnail = "";//todo
-            sampleJson.Title = sampleYaml.sample[0].name;
-            sampleJson.Url = sampleYaml.sample[0].path;//todo add http protocol
-            return sampleJson;
-        }
-
-
-
-    
+        
 
         static YamlStream ImportYaml(SearchCode sc,string org)
         {
@@ -100,10 +78,10 @@ namespace sampl_yaml_to_json
                 .WithNamingConvention(new CamelCaseNamingConvention())
                 .Build();
             StringReader sr = new StringReader(testContent);
-                var sample = deserializer.Deserialize<SampleItem>(sr);
-            SampleJsonVT sj = ConvertYamlToJsonObject(sample);
+                var sample = deserializer.Deserialize<SampleYamlVT>(sr);
+           // SampleJsonVT sj = ConvertYamlToJsonObject(sample);
 
-            string output = JsonConvert.SerializeObject(sj);
+//            string output = JsonConvert.SerializeObject(sj);
 
             var yaml = new YamlStream();
             //get file contents.
