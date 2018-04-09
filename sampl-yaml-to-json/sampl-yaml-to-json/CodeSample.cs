@@ -16,6 +16,9 @@ namespace sampl_yaml_to_json
     /// </summary>
     class CodeSample
     {
+        private const string LASTMODIFIEDBY = "o365devx@microsoft.com";
+        private const string RECOMMENDED = "False";
+
         private SampleYamlVT sampleYAML=null;
         private SampleJsonVT sampleJSON = null;
 
@@ -40,9 +43,11 @@ namespace sampl_yaml_to_json
                 .Build();
             StringReader sr = new StringReader(content);
             sampleYAML = deserializer.Deserialize<SampleYamlVT>(sr);
+           
 
             //Also store an internal JSON object representation
             sampleJSON = ConvertYamlToJsonObject(sampleYAML);
+            sampleJSON.Url = "https://github.com/" + org + "/" + repoName;
         }
 
         /// <summary>
@@ -57,6 +62,11 @@ namespace sampl_yaml_to_json
                 return null;
         }
 
+        public SampleJsonVT GetJSONObject()
+        {
+            return sampleJSON;
+        }
+
         /// <summary>
         /// Converts a Yaml value type to a Json value type
         /// </summary>
@@ -66,13 +76,14 @@ namespace sampl_yaml_to_json
         {
             var sampleJson = new SampleJsonVT
             {
-                DateCreated = "",
+                DateCreated = DateTime.Now.ToLongDateString(),
+                Description = sampleYAML.sample[0].description,
                 Id = Guid.Empty,//todo this is either generated, or need to match with an existing one in json file passed in for comparison.
                 Languages = sampleYaml.sample[0].languages,
-                LastModifiedBy = "",//todo
-                LastModifiedDate = "",//todo
+                LastModifiedBy = LASTMODIFIEDBY,//todo
+                LastModifiedDate = DateTime.Now.ToLongDateString(),//todo
                 Products = sampleYaml.sample[0].products,
-                Recommended = "False",//currently the spec is using a string
+                Recommended = RECOMMENDED,
                 Technologies = sampleYaml.sample[0].technologies,
                 Thumbnail = "",//todo
                 Title = sampleYaml.sample[0].name,
@@ -130,6 +141,11 @@ namespace sampl_yaml_to_json
     {
         public string[] scenarios { get; set; }
         public string[] products { get; set; }
+    }
+
+    public class SampleJsonFileVT
+    {
+        public List<SampleJsonVT> allSamples;
     }
 
     /// <summary>

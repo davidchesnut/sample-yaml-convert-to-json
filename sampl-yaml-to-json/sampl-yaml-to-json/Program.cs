@@ -25,10 +25,15 @@ namespace sampl_yaml_to_json
             }
 
             //testtest
+            JSONFile json = new JSONFile();
+            json.ImportJSONFile(@"c:\projects\samples.json");
+            
             var sample = new CodeSample();
-            sample.ImportYAMLFromGitHubFile("officedev", "Excel-Add-in-WoodGrove-Expense-Trends", "/Excel-Add-in-WoodGrove-Expense-Trends.yml");
-            var json = sample.GetJSON();
-
+            sample.ImportYAMLFromGitHubFile("OfficeDev", "Excel-Add-in-WoodGrove-Expense-Trends", "/Excel-Add-in-WoodGrove-Expense-Trends.yml");
+            var sampleJson = sample.GetJSONObject();
+            json.AddSampleToJSON(sampleJson);
+            json.SaveToFile(@"c:\projects\sample-new.json");
+            
             return;
 
             //testtest

@@ -53,6 +53,7 @@
   <ItemGroup>
     <Compile Include="CodeSample.cs" />
     <Compile Include="GitHubManager.cs" />
+    <Compile Include="JSONFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
