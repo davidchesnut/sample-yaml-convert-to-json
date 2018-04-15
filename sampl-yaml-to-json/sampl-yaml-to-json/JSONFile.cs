@@ -31,7 +31,7 @@ namespace sampl_yaml_to_json
         /// <param name="sampleJSON">The new sample to add</param>
         public void AddSampleToJSON(SampleJsonVT sampleJSON)
         {
-            //check if sample already exists
+            //check if sample already exists searching through existing array of samples
             int loc = IndexOf(sampleJSON.Url);
             if (loc >= -0)
             {
@@ -46,12 +46,12 @@ namespace sampl_yaml_to_json
                 sample.allSamples[loc].Technologies = sampleJSON.Technologies;
                 sample.allSamples[loc].Title = sampleJSON.Title;
                 sample.allSamples[loc].LastModifiedBy = sampleJSON.LastModifiedBy;
-                sample.allSamples[loc].LastModifiedDate = DateTime.Now.ToLongDateString();
+                sample.allSamples[loc].LastModifiedDate = DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt");
             }
             else
             {
                 //create a new sample
-                
+                sampleJSON.Id = Guid.NewGuid(); //new samples need a new guid (otherwise this is all 0000's)
                 sample.allSamples.Add(sampleJSON);
             }
         }
@@ -68,7 +68,7 @@ namespace sampl_yaml_to_json
             {
                 for (int i = 0; i < sample.allSamples.Count; i++)
                 {
-                    if (string.Equals(sample.allSamples[i].Url, url)) return i;
+                    if (sample.allSamples[i].Url.ToLower().Equals(url.ToLower())) return i;
                 }
             }
             return -1;

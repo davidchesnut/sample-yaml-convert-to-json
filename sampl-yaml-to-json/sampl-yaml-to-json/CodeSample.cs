@@ -16,6 +16,7 @@ namespace sampl_yaml_to_json
     /// </summary>
     class CodeSample
     {
+        private const string GALLERYTYPESAMPLE = "samples";
         private const string LASTMODIFIEDBY = "o365devx@microsoft.com";
         private const string RECOMMENDED = "False";
 
@@ -30,24 +31,34 @@ namespace sampl_yaml_to_json
         /// <param name="path">Path name of the file on GitHub (such as "/sample.yml")</param>
         public void ImportYAMLFromGitHubFile(string org, string repoName, string path)
         {
-            //TODO this should throw an error if the file is not found, or does not have correct YAML
-           // string testContent = "### YamlMime:Sample\nsample:\r\n- name: 'Skype for Business: Healthcare app'\r\n  path: HealthcareApp\r\n  description: Skype for Android Healthcare app sample.\r\n  readme: ''\r\n  generateZip: FALSE\r\n  isLive: TRUE\r\n  technologies:\r\n  - Office Add-in\r\n  azureDeploy: ''\r\n  author: JohnAustin-MSFT\r\n  platforms: []\r\n  languages:\r\n  - Java\r\n  extensions:\r\n    products:\r\n    - Skype for Business\r\n    scenarios: []\r\n";
+            try
+            {
+                //TODO this should throw an error if the file is not found, or does not have correct YAML
+                // string testContent = "### YamlMime:Sample\nsample:\r\n- name: 'Skype for Business: Healthcare app'\r\n  path: HealthcareApp\r\n  description: Skype for Android Healthcare app sample.\r\n  readme: ''\r\n  generateZip: FALSE\r\n  isLive: TRUE\r\n  technologies:\r\n  - Office Add-in\r\n  azureDeploy: ''\r\n  author: JohnAustin-MSFT\r\n  platforms: []\r\n  languages:\r\n  - Java\r\n  extensions:\r\n    products:\r\n    - Skype for Business\r\n    scenarios: []\r\n";
 
-            //get file contents.
-            var repoSample = GitHubManager.instance.client.Repository.Content.GetAllContents(org, repoName, path).Result;
-            var content = repoSample[0].Content;
+                //get file contents.
+                var repoSample = GitHubManager.instance.client.Repository.Content.GetAllContents(org, repoName, path).Result;
+                var content = repoSample[0].Content;
 
-            //deserialize YAML to internal object representation
-            var deserializer = new DeserializerBuilder()
-                .WithNamingConvention(new CamelCaseNamingConvention())
-                .Build();
-            StringReader sr = new StringReader(content);
-            sampleYAML = deserializer.Deserialize<SampleYamlVT>(sr);
-           
+                //deserialize YAML to internal object representation
+                var deserializer = new DeserializerBuilder()
+                    .WithNamingConvention(new CamelCaseNamingConvention())
+                    .Build();
+                StringReader sr = new StringReader(content);
+                sampleYAML = deserializer.Deserialize<SampleYamlVT>(sr);
 
-            //Also store an internal JSON object representation
-            sampleJSON = ConvertYamlToJsonObject(sampleYAML);
-            sampleJSON.Url = "https://github.com/" + org + "/" + repoName;
+
+                //Also store an internal JSON object representation
+                sampleJSON = ConvertYamlToJsonObject(sampleYAML);
+                sampleJSON.Url = "https://github.com/" + org + "/" + repoName;
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not import YAML for repo: " + repoName);
+                Console.WriteLine("   YAML may be incorrect, or missing.");
+                Console.WriteLine("   Error message: " + e.Message);
+            }
         }
 
         /// <summary>
@@ -74,22 +85,33 @@ namespace sampl_yaml_to_json
         /// <returns>A JSON value type</returns>
         private SampleJsonVT ConvertYamlToJsonObject(SampleYamlVT sampleYaml)
         {
-            var sampleJson = new SampleJsonVT
+            try
             {
-                DateCreated = DateTime.Now.ToLongDateString(),
-                Description = sampleYAML.sample[0].description,
-                Id = Guid.Empty,//todo this is either generated, or need to match with an existing one in json file passed in for comparison.
-                Languages = sampleYaml.sample[0].languages,
-                LastModifiedBy = LASTMODIFIEDBY,//todo
-                LastModifiedDate = DateTime.Now.ToLongDateString(),//todo
-                Products = sampleYaml.sample[0].products,
-                Recommended = RECOMMENDED,
-                Technologies = sampleYaml.sample[0].technologies,
-                Thumbnail = "",//todo
-                Title = sampleYaml.sample[0].name,
-                Url = sampleYaml.sample[0].path//todo add http protocol
-            };
-            return sampleJson;
+                var sampleJson = new SampleJsonVT
+                {
+                    GalleryType = GALLERYTYPESAMPLE,
+                    DateCreated = DateTime.Now.ToLongDateString(),
+                    Description = sampleYAML.sample[0].description,
+                    Id = Guid.Empty,//todo this is either generated, or need to match with an existing one in json file passed in for comparison.
+                    Languages = sampleYaml.sample[0].languages,
+                    LastModifiedBy = LASTMODIFIEDBY,//todo
+                    LastModifiedDate = DateTime.Now.ToLongDateString(),//todo
+                    Products = sampleYaml.sample[0].extensions.products,
+                    Recommended = RECOMMENDED,
+                    Technologies = sampleYaml.sample[0].technologies,
+                    Thumbnail = "",//todo
+                    Title = sampleYaml.sample[0].name,
+                    Scenarios = sampleYaml.sample[0].extensions.scenarios,
+                    Url = sampleYaml.sample[0].path//todo add http protocol
+                };
+                return sampleJson;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Could not convert YAML to JSON for: " + sampleYaml.sample[0].name);
+                Console.WriteLine("   Error message: " + e.Message);
+                return null;
+            }
         }
     }
 
@@ -119,7 +141,7 @@ namespace sampl_yaml_to_json
         public string[] technologies { get; set; }
         public string author { get; set; } //use this as last modified by?
         public string[] languages { get; set; }
-        public string[] products { get; set; }
+       // public string[] products { get; set; }
         //yaml entries that we don't use. //todo see if these can be excluded by the yaml deserializer
         public string path { get; set; }
         public string filename { get; set; }
@@ -153,6 +175,7 @@ namespace sampl_yaml_to_json
     /// </summary>
     public class SampleJsonVT
     {
+        public string GalleryType;
         public Guid Id;
         public string Recommended;
         public string Title;
@@ -165,5 +188,6 @@ namespace sampl_yaml_to_json
         public string[] Technologies { get; set; }
         public string[] Languages { get; set; }
         public string[] Products { get; set; }
+        public string[] Scenarios { get; set; }
     }
 }
