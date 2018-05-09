@@ -1,0 +1,43 @@
+﻿[
+  {
+    "GalleryType": "samples",
+    "Id": "52B90BB7-F3BF-42C2-9FB4-DB2BC7A3C006",
+    "Recommended": "False",
+    "Title": "Weather sample",
+    "Description": "Source code to add a weather tab to the skeleton app.",
+    "DateCreated": "12/04/2017 2:40:56 PM",
+    "LastModifiedDate": "12/04/2017 4:20:54 AM",
+    "LastModifiedBy": "someone@sample.com",
+    "Thumbnail": "https://www.contoso.com/media/Default/CodeSamples/office.png",
+    "Url": "https://github.com/OfficeDev/microsoft-sample-1",
+    "Technologies": [],
+    "Languages": [
+      "TypeScript",
+      "HTML"
+    ],
+    "Products": [
+      "Microsoft Teams"
+    ]
+  },
+  {
+    "GalleryType": "samples",
+    "Id": "8595FDED-07C1-488A-8C06-CC5B662DD476",
+    "Recommended": "True",
+    "Title": "Bot sample",
+    "Description": "Register your own local bot and run scripts from anywhere.",
+    "DateCreated": "12/04/2017 2:40:56 PM",
+    "LastModifiedDate": "12/04/2017 4:20:54 AM",
+    "LastModifiedBy": "someone@sample.com",
+    "Thumbnail": "https://www.contoso.com/media/Default/CodeSamples/office.png",
+    "Url": "https://github.com/MicrosoftGraph/microsoft-sample-2",
+    "Technologies": [
+      "Microsoft Bot Framework"
+    ],
+    "Languages": [
+      "TypeScript"
+    ],
+    "Products": [
+      "Microsoft Teams"
+    ]
+  }
+]
